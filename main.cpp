@@ -8,6 +8,15 @@ using namespace std;
 
 
 int main (){
-  // Testing only
-  // EmailStack  allEmails = EmailStack::getAllEmails();
+  // Load emails
+    EmailStack emailStack = EmailStack::getAllEmails();
+
+    // Show inbox for a specific user (replace with actual email)
+    std::string userEmail = "brittney@apu.com";
+    //emailStack.showInbox(IMPORTANT, userEmail);
+
+    // Show sent emails for a specific user
+    emailStack.showSentEmails(userEmail);
+
+    return 0;
 }
