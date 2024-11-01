@@ -3,20 +3,19 @@
 #include <algorithm>
 #include "Email.h"
 #include "EmailStack.h"
+#include "User.h"
 
 using namespace std;
 
+int main()
+{
+  // User::registerNewUser("meisuen@apu.com", "meisuen");
+  bool passedAuth = User::authenticateUser("meisuen@apu.com", "meisuen");
 
-int main (){
-  // Load emails
-    EmailStack emailStack = EmailStack::getAllEmails();
+  if (passedAuth) {
+    User myUser = User("meisuen@apu.com");
+    myUser.receiveEmails();
+  }
 
-    // Show inbox for a specific user (replace with actual email)
-    std::string userEmail = "brittney@apu.com";
-    //emailStack.showInbox(IMPORTANT, userEmail);
-
-    // Show sent emails for a specific user
-    emailStack.showSentEmails(userEmail);
-
-    return 0;
+  return 0;
 }

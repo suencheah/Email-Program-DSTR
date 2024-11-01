@@ -1,34 +1,29 @@
 #pragma once
 #include <string>
 #include <sstream>
+#include "EmailPriorityEnum.h"
 // #include <chrono>
 #pragma once
 
 using namespace std;
 
-enum EmailPriority
-{
-  IMPORTANT,
-  NORMAL,
-  SPAM,
-  UNASSIGNED
-};
+
 struct Email
 {
   string sender;
   string recipient;
   string subject;
   string body;
-  string timestamp;
+  string date;
   EmailPriority priority;
 
   // Default Constructor
-  Email() : sender(""), recipient(""), subject(""), body(""), timestamp(""), priority(UNASSIGNED) {};
+  Email() : sender(""), recipient(""), subject(""), body(""), date(""), priority(UNASSIGNED) {};
 
   // Constructor
-  Email(string senderEmailAdd, string recipientEmailAdd, string subjectLine, string bodyContent, string emailTimestamp, EmailPriority emailPriority)
+  Email(string senderEmailAdd, string recipientEmailAdd, string subjectLine, string bodyContent, string emaildate, EmailPriority emailPriority)
       : sender(senderEmailAdd), recipient(recipientEmailAdd), subject(subjectLine), body(bodyContent),
-        timestamp(emailTimestamp), priority(emailPriority) {};
+        date(emaildate), priority(emailPriority) {};
 
   void detectEmailPriority()
   {
