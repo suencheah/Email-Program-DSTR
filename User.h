@@ -19,7 +19,7 @@ public:
   User(string userEmail)
   {
     email = userEmail;
-    dataFilePath = userEmail + ".csv";
+    dataFilePath = "DataFiles/" + userEmail + ".csv";
     userEmails = getUserEmails(dataFilePath);
   }
 
@@ -40,7 +40,7 @@ public:
   static void registerNewUser(string email, string password)
   {
     // Add user credentials into text file
-    ofstream credentialsFile("userCredentials.txt", ios::app);
+    ofstream credentialsFile("DataFiles/userCredentials.txt", ios::app);
     if (!credentialsFile.is_open())
     {
       std::cerr << "Unable to open user email file for appending." << std::endl;
@@ -49,7 +49,7 @@ public:
     credentialsFile << email << "," << password << "\n";
 
     // Create new csv file for this user
-    ofstream userFile(email + ".csv");
+    ofstream userFile("DataFiles/" +  email + ".csv");
 
     if (userFile.is_open())
     {
@@ -66,7 +66,7 @@ public:
   bool static authenticateUser(const string inputEmail, const string inputPassword)
   {
     bool authenticated = false;
-    ifstream userCredentials("userCredentials.txt");
+    ifstream userCredentials("DataFiles/userCredentials.txt");
     if (!userCredentials.is_open())
     {
       cerr << "unable to load user credentials file." << endl;
@@ -150,7 +150,7 @@ public:
 
   void receiveEmails()
   {
-    string filePath = "pendingEmails.csv";
+    string filePath = "DataFiles/pendingEmails.csv";
     ifstream pendingEmails(filePath);
     string remainingEmails;
 
@@ -216,13 +216,6 @@ public:
           }
           else
           {
-            // If user is not recipient, retain that line
-            // remainingEmails += "\"" + currEmail.sender + "\",";
-            // remainingEmails += "\"" + currEmail.recipient + "\",";
-            // remainingEmails += "\"" + currEmail.subject + "\",";
-            // remainingEmails += "\"" + currEmail.date + "\",";
-            // remainingEmails += "\"" + EmailPriorityToString(currEmail.priority) + "\",";
-            // remainingEmails += "\"" + currEmail.body + "\"\n";
             remainingEmails += line + "\n";
           }
         }
@@ -241,7 +234,7 @@ public:
     }
 
     // Rewrite the pending emails file with remaining emails
-    ofstream outputFile("pendingEmails.csv", ios::trunc);
+    ofstream outputFile("DataFiles/pendingEmails.csv", ios::trunc);
     if (outputFile.is_open())
     {
       outputFile << remainingEmails;
