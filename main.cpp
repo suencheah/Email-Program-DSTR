@@ -9,6 +9,7 @@ using namespace std;
 
 int main()
 {
+  // Testing
   User::registerNewUser("meisuen@apu.com", "meisuen");
   bool passedAuth = User::authenticateUser("meisuen@apu.com", "meisuen");
 

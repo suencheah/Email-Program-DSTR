@@ -23,20 +23,6 @@ public:
     userEmails = getUserEmails(dataFilePath);
   }
 
-  void output_csv(ostream &out, string s)
-  {
-    if (s.find('"') != string::npos)
-    { // Escape double-quotes
-      for (string::size_type n = 0; (n = s.find('"', n)) != string::npos; n += 2)
-        s.replace(n, 1, "\"\"");
-      out << '"' << s << '"';
-    }
-    else if (s.find(',') != string::npos)
-      out << '"' << s << '"';
-    else
-      out << s;
-  }
-
   static void registerNewUser(string email, string password)
   {
     // Add user credentials into text file
