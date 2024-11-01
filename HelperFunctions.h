@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <string>
 
 using namespace std;
@@ -11,6 +12,19 @@ enum EmailPriority
   UNASSIGNED
 };
 
+  void output_csv(ostream &out, string s)
+  {
+    if (s.find('"') != string::npos)
+    { // Escape double-quotes
+      for (string::size_type n = 0; (n = s.find('"', n)) != string::npos; n += 2)
+        s.replace(n, 1, "\"\"");
+      out << '"' << s << '"';
+    }
+    else if (s.find(',') != string::npos)
+      out << '"' << s << '"';
+    else
+      out << s;
+  }
 
   static EmailPriority stringToEmailPriority(string priorityString)
   {

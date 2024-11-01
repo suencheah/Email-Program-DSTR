@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "EmailPriorityEnum.h"
+#include "HelperFunctions.h"
 #include "EmailStack.h"
 
 using namespace std;
@@ -23,6 +23,20 @@ public:
     userEmails = getUserEmails(dataFilePath);
   }
 
+  void output_csv(ostream &out, string s)
+  {
+    if (s.find('"') != string::npos)
+    { // Escape double-quotes
+      for (string::size_type n = 0; (n = s.find('"', n)) != string::npos; n += 2)
+        s.replace(n, 1, "\"\"");
+      out << '"' << s << '"';
+    }
+    else if (s.find(',') != string::npos)
+      out << '"' << s << '"';
+    else
+      out << s;
+  }
+
   static void registerNewUser(string email, string password)
   {
     // Add user credentials into text file
@@ -40,7 +54,7 @@ public:
     if (userFile.is_open())
     {
       // Write column headers
-      userFile << "Sender,Recipient,Subject,Body,Date,Priority\n";
+      userFile << "Sender,Recipient,Subject,Date,Priority,Body\n";
       userFile.close();
     }
     else
@@ -187,23 +201,29 @@ public:
             currEmail.detectEmailPriority();
             userEmails.push(currEmail);
             // Append received email into user's file
-            userFile << "\"" << currEmail.sender << "\","
-                     << "\"" << currEmail.recipient << "\","
-                     << "\"" << currEmail.subject << "\","
-                     << "\"" << currEmail.date << "\","
-                     << "\"" << EmailPriorityToString(currEmail.priority) << "\","
-                     << "\"" << currEmail.body << "\"\n";
+            output_csv(userFile, currEmail.sender);
+            userFile << ",";
+            output_csv(userFile, currEmail.recipient);
+            userFile << ",";
+            output_csv(userFile, currEmail.subject);
+            userFile << ",";
+            output_csv(userFile, currEmail.date);
+            userFile << ",";
+            output_csv(userFile, EmailPriorityToString(currEmail.priority));
+            userFile << ",";
+            output_csv(userFile, currEmail.body);
+            userFile << "\n";
           }
           else
           {
             // If user is not recipient, retain that line
-            remainingEmails += "\"" + currEmail.sender + "\",";
-            remainingEmails += "\"" + currEmail.recipient + "\",";
-            remainingEmails += "\"" + currEmail.subject + "\",";
-            remainingEmails += "\"" + currEmail.date + "\",";
-            remainingEmails += "\"" + EmailPriorityToString(currEmail.priority) + "\",";
-            remainingEmails += "\"" + currEmail.body + "\"\n";
-            // remainingEmails += line + "\n";
+            // remainingEmails += "\"" + currEmail.sender + "\",";
+            // remainingEmails += "\"" + currEmail.recipient + "\",";
+            // remainingEmails += "\"" + currEmail.subject + "\",";
+            // remainingEmails += "\"" + currEmail.date + "\",";
+            // remainingEmails += "\"" + EmailPriorityToString(currEmail.priority) + "\",";
+            // remainingEmails += "\"" + currEmail.body + "\"\n";
+            remainingEmails += line + "\n";
           }
         }
         catch (const exception &e)

@@ -1,12 +1,11 @@
 #pragma once
 #include <string>
 #include <sstream>
-#include "EmailPriorityEnum.h"
+#include "HelperFunctions.h"
 // #include <chrono>
 #pragma once
 
 using namespace std;
-
 
 struct Email
 {
@@ -93,7 +92,7 @@ struct Email
     {
       priority = SPAM;
     }
-    else if (score < 5)
+    else if (score < 3)
     {
       priority = NORMAL;
     }
