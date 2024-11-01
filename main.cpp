@@ -10,13 +10,15 @@ using namespace std;
 int main()
 {
   // Testing
-  User::registerNewUser("meisuen@apu.com", "meisuen");
+  // User::registerNewUser("meisuen@apu.com", "meisuen");
   bool passedAuth = User::authenticateUser("meisuen@apu.com", "meisuen");
 
-  if (passedAuth) {
-    User myUser = User("meisuen@apu.com");
-    myUser.receiveEmails();
-  }
+  User myUser = User("meisuen@apu.com");
+  myUser.receiveEmails();
+
+  myUser.showInbox(NORMAL);
+  cout << "!!!!!!!!!!!!!!!!!!!\n" << endl;
+  myUser.showSentEmails();
 
   return 0;
 }
