@@ -1,8 +1,7 @@
-#pragma once;
+#pragma once
 #include <chrono>
 #include <string>
 #include <iostream>
-#include <optional>
 #include <fstream>
 #include <sstream>
 #include "Email.h"

@@ -8,6 +8,6 @@ using namespace std;
 
 
 int main (){
-  EmailStack  allEmails = EmailStack::getAllEmails();
-  
+  // Testing only
+  // EmailStack  allEmails = EmailStack::getAllEmails();
 }
