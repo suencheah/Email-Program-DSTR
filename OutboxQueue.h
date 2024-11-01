@@ -1,5 +1,7 @@
+#pragma once;
 #include <iostream>
 #include "Email.h"
+#include "EmailStack.h"
 
 using namespace std;
 
@@ -68,9 +70,12 @@ public:
     return elem;
   }
 
-  bool sendEmail(Email emailToBeSent){
-    // logic to send email adn write into csv file
+  bool sendEmail(Email emailToBeSent, EmailStack allEmails){
+    // push new email into allEmails Stack.
+    
+    // write new email into csv file
 
     // After sent successfully, dequeue email from outbox
+
   }
 };
