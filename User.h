@@ -108,9 +108,9 @@ public:
           std::getline(ss, currEmail.sender, ',');
           std::getline(ss, currEmail.recipient, ',');
           std::getline(ss, currEmail.subject, ',');
-          std::getline(ss, currEmail.body, ',');
           std::getline(ss, currEmail.date, ',');
-          std::getline(ss, priorityString);
+          std::getline(ss, priorityString, ',');
+          std::getline(ss, currEmail.body);
 
           currEmail.priority = stringToEmailPriority(priorityString);
           if (currEmail.priority == UNASSIGNED)
@@ -169,9 +169,9 @@ public:
           getline(ss, currEmail.sender, ',');
           getline(ss, currEmail.recipient, ',');
           getline(ss, currEmail.subject, ',');
-          getline(ss, currEmail.body, ',');
           getline(ss, currEmail.date, ',');
-          getline(ss, priorityString);
+          getline(ss, priorityString, ',');
+          getline(ss, currEmail.body);
 
           // If user is recipient
           if (currEmail.recipient == email)
@@ -187,17 +187,23 @@ public:
             currEmail.detectEmailPriority();
             userEmails.push(currEmail);
             // Append received email into user's file
-            userFile << currEmail.sender << ","
-                     << currEmail.recipient << ","
-                     << currEmail.subject << ","
-                     << currEmail.body << ","
-                     << currEmail.date << ","
-                     << EmailPriorityToString(currEmail.priority) << "\n";
+            userFile << "\"" << currEmail.sender << "\","
+                     << "\"" << currEmail.recipient << "\","
+                     << "\"" << currEmail.subject << "\","
+                     << "\"" << currEmail.date << "\","
+                     << "\"" << EmailPriorityToString(currEmail.priority) << "\","
+                     << "\"" << currEmail.body << "\"\n";
           }
           else
           {
             // If user is not recipient, retain that line
-            remainingEmails += line + "\n";
+            remainingEmails += "\"" + currEmail.sender + "\",";
+            remainingEmails += "\"" + currEmail.recipient + "\",";
+            remainingEmails += "\"" + currEmail.subject + "\",";
+            remainingEmails += "\"" + currEmail.date + "\",";
+            remainingEmails += "\"" + EmailPriorityToString(currEmail.priority) + "\",";
+            remainingEmails += "\"" + currEmail.body + "\"\n";
+            // remainingEmails += line + "\n";
           }
         }
         catch (const exception &e)
