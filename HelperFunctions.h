@@ -12,18 +12,18 @@ enum EmailPriority
   UNASSIGNED
 };
 
-  void output_csv(ostream &out, string s)
+  string output_csv( string s)
   {
     if (s.find('"') != string::npos)
     { // Escape double-quotes
       for (string::size_type n = 0; (n = s.find('"', n)) != string::npos; n += 2)
         s.replace(n, 1, "\"\"");
-      out << '"' << s << '"';
+      return '"' + s + '"';
     }
     else if (s.find(',') != string::npos)
-      out << '"' << s << '"';
+      return '"' + s + '"';
     else
-      out << s;
+      return s;
   }
 
   static EmailPriority stringToEmailPriority(string priorityString)

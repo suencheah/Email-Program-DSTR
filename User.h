@@ -8,9 +8,14 @@ using namespace std;
 
 class User
 {
-  string email;
   string dataFilePath;
-  EmailStack userEmails;
+
+public:
+  string email;
+  EmailStack importantEmails;
+  EmailStack normalEmails;
+  EmailStack spamEmails;
+  EmailStack sentEmails;
 
 public:
   // Constructors
@@ -20,11 +25,52 @@ public:
   {
     email = userEmail;
     dataFilePath = "DataFiles/" + userEmail + ".csv";
-    userEmails = getUserEmails(dataFilePath);
+    receiveEmails();
+    getUserEmails(dataFilePath);
+  }
+
+  static bool isRegistered(string const &email)
+  {
+    ifstream credentialsFile("DataFiles/userCredentials.txt");
+    if (!credentialsFile.is_open())
+    {
+      cerr << "unable to load user credentials file." << endl;
+      return false;
+    }
+    else
+    {
+      string line;
+      while (getline(credentialsFile, line))
+      {
+        try
+        {
+          stringstream ss(line);
+          string emailInFile;
+          string password;
+          getline(ss, emailInFile, ','),
+              getline(ss, password);
+          if (email == emailInFile)
+          {
+            return true;
+          }
+        }
+        catch (const exception &e)
+        {
+          cerr << "Exception: " << e.what() << '\n';
+        }
+      }
+    }
+    return false;
   }
 
   static void registerNewUser(string email, string password)
   {
+    bool userIsAlreadyRegistered = isRegistered(email);
+    if (userIsAlreadyRegistered)
+    {
+      cerr << "Your email is already registered, please proceed to login." << endl;
+      return;
+    }
     // Add user credentials into text file
     ofstream credentialsFile("DataFiles/userCredentials.txt", ios::app);
     if (!credentialsFile.is_open())
@@ -35,7 +81,7 @@ public:
     credentialsFile << email << "," << password << "\n";
 
     // Create new csv file for this user
-    ofstream userFile("DataFiles/" +  email + ".csv");
+    ofstream userFile("DataFiles/" + email + ".csv");
 
     if (userFile.is_open())
     {
@@ -51,6 +97,7 @@ public:
 
   bool static authenticateUser(const string inputEmail, const string inputPassword)
   {
+    bool emailMatched = false;
     bool authenticated = false;
     ifstream userCredentials("DataFiles/userCredentials.txt");
     if (!userCredentials.is_open())
@@ -70,10 +117,15 @@ public:
           getline(ss, email, ','),
               getline(ss, password);
 
-          if (inputEmail == email && inputPassword == password)
+          if (inputEmail == email)
           {
-            authenticated = true;
-            break;
+            emailMatched = true;
+            if (inputPassword == password)
+            {
+              authenticated = true;
+              cout << "Login successful." << endl;
+              break;
+            }
           }
         }
         catch (const exception &e)
@@ -82,12 +134,18 @@ public:
         }
       }
     }
+    if (!emailMatched) {
+      cerr << "Your email is not registered." << endl;
+    }else{
+      cout << "Wrong credentials entered." << endl;
+    }
     return authenticated;
   }
 
-  static EmailStack getUserEmails(string userDataFilePath)
+private:
+  void getUserEmails(string userDataFilePath)
   {
-    EmailStack userEmails;
+    // EmailStack userEmails;
     ifstream userEmailFile(userDataFilePath);
 
     // Get all Emails from CSV file
@@ -105,20 +163,41 @@ public:
           stringstream ss(line);
           Email currEmail;
           string priorityString;
-          std::getline(ss, currEmail.sender, ',');
-          std::getline(ss, currEmail.recipient, ',');
-          std::getline(ss, currEmail.subject, ',');
-          std::getline(ss, currEmail.date, ',');
-          std::getline(ss, priorityString, ',');
-          std::getline(ss, currEmail.body);
+
+          getline(ss, currEmail.sender, ',');
+          getline(ss, currEmail.recipient, ',');
+          getline(ss, currEmail.subject, ',');
+          getline(ss, currEmail.date, ',');
+          getline(ss, priorityString, ',');
+          getline(ss, currEmail.body);
 
           currEmail.priority = stringToEmailPriority(priorityString);
-          if (currEmail.priority == UNASSIGNED)
+          if (currEmail.recipient == email)
           {
-            currEmail.detectEmailPriority();
-          }
+            if (currEmail.priority == UNASSIGNED)
+            {
+              currEmail.detectEmailPriority();
+            }
+            switch (currEmail.priority)
+            {
+            case IMPORTANT:
+              importantEmails.push(currEmail);
+              break;
+            case NORMAL:
+              normalEmails.push(currEmail);
+              break;
+            case SPAM:
+              spamEmails.push(currEmail);
+              break;
 
-          userEmails.push(currEmail);
+            default:
+              break;
+            }
+          }
+          else if (currEmail.sender == email)
+          {
+            sentEmails.push(currEmail);
+          }
         }
         catch (const exception &e)
         {
@@ -128,16 +207,16 @@ public:
     }
     else
     {
-      cerr << "Unable to open file" << endl;
+      cerr << "Unable to open file 2" << endl;
     }
     userEmailFile.close();
-    return userEmails;
+    // return userEmails;
   }
 
   void receiveEmails()
   {
     string filePath = "DataFiles/pendingEmails.csv";
-    ifstream pendingEmails(filePath);
+    fstream pendingEmails(filePath);
     string remainingEmails;
 
     // Open user's emails file for appending
@@ -151,6 +230,13 @@ public:
     // Get pending emails
     if (pendingEmails.is_open())
     {
+      // char bom[3];
+      // pendingEmails.read(bom, 3);
+      // if (!(bom[0] == '\xEF' && bom[1] == '\xBB' && bom[2] == '\xBF'))
+      // {
+      //   // No BOM, reset the position to the beginning
+      //   pendingEmails.seekg(0);
+      // }
       string line;
 
       // Skip and store column header
@@ -159,6 +245,7 @@ public:
 
       while (getline(pendingEmails, line))
       {
+        // cout << "Line- " << line << endl;
         try
         {
           stringstream ss(line);
@@ -172,6 +259,7 @@ public:
           getline(ss, currEmail.date, ',');
           getline(ss, priorityString, ',');
           getline(ss, currEmail.body);
+          // cout << "HERE1---" << currEmail.body << endl;
 
           // If user is recipient
           if (currEmail.recipient == email)
@@ -184,20 +272,18 @@ public:
               currEmail.detectEmailPriority();
             }
 
-            currEmail.detectEmailPriority();
-            userEmails.push(currEmail);
             // Append received email into user's file
-            output_csv(userFile, currEmail.sender);
+            userFile << currEmail.sender;
             userFile << ",";
-            output_csv(userFile, currEmail.recipient);
+            userFile << currEmail.recipient;
             userFile << ",";
-            output_csv(userFile, currEmail.subject);
+            userFile << currEmail.subject;
             userFile << ",";
-            output_csv(userFile, currEmail.date);
+            userFile << currEmail.date;
             userFile << ",";
-            output_csv(userFile, EmailPriorityToString(currEmail.priority));
+            userFile << EmailPriorityToString(currEmail.priority);
             userFile << ",";
-            output_csv(userFile, currEmail.body);
+            userFile << currEmail.body;
             userFile << "\n";
           }
           else
@@ -229,124 +315,6 @@ public:
     else
     {
       cerr << "Unable to update pending emails file." << endl;
-    }
-  }
-
-  void showInbox(const EmailPriority priorityChosen)
-  {
-    Node *curr = userEmails.top;
-    int shownCount = 0;
-    bool continueShowing = true; // User wants to continue showing next page?
-
-    while (curr != nullptr && continueShowing)
-    {
-      // Check if the recipient matches the specified user email
-      if (curr->data.recipient == email)
-      {
-        // Determine if the current email should be shown based on priority
-        bool shouldShow = false;
-        if (priorityChosen == IMPORTANT && curr->data.priority == IMPORTANT)
-        {
-          shouldShow = true;
-        }
-        else if (priorityChosen == NORMAL && (curr->data.priority == IMPORTANT || curr->data.priority == NORMAL))
-        {
-          shouldShow = true;
-        }
-        else if (priorityChosen == SPAM && curr->data.priority == SPAM)
-        {
-          shouldShow = true;
-        }
-
-        // Display email if it matches the chosen priority
-        if (shouldShow)
-        {
-          cout << "From: " << curr->data.sender << "\n";
-          cout << "Date: " << curr->data.date << "\n";
-          cout << "Subject: " << curr->data.subject << "\n";
-          cout << "Body: " << curr->data.body << "\n";
-          shownCount++;
-        }
-      }
-
-      // Check if 10 emails have been shown for pagination control
-      if (shownCount == 10)
-      {
-        // Prompt user to continue or stop with validation
-        char choice;
-        do
-        {
-          cout << "Show more emails? (y/n): ";
-          cin >> choice;
-
-          // Validate input
-          if (choice != 'y' && choice != 'Y' && choice != 'n' && choice != 'N')
-          {
-            cout << "Invalid input. Please enter 'y' or 'n'.\n";
-          }
-        } while (choice != 'y' && choice != 'Y' && choice != 'n' && choice != 'N');
-
-        continueShowing = (choice == 'y' || choice == 'Y');
-        shownCount = 0; // Reset count for the next set of 10 emails
-      }
-
-      curr = curr->next; // Move to the next email
-    }
-
-    // Check if end of list is reached
-    if (curr == nullptr)
-    {
-      cout << "End of inbox reached.\n";
-    }
-  }
-
-  void showSentEmails()
-  {
-    Node *curr = userEmails.top;
-    int shownCount = 0;
-    bool continueShowing = true; // User wants to continue showing next page?
-
-    while (curr != nullptr && continueShowing)
-    {
-      // Check if the sender matches the specified user email
-      if (curr->data.sender == email)
-      {
-        // Display sent email content
-        cout << "To: " << curr->data.recipient << "\n";
-        cout << "Date: " << curr->data.date << "\n";
-        cout << "Subject: " << curr->data.subject << "\n";
-        cout << "Body: " << curr->data.body << "\n";
-        shownCount++;
-      }
-
-      // Check if 10 emails have been shown for pagination control
-      if (shownCount == 10)
-      {
-        // Prompt user to continue or stop with validation
-        char choice;
-        do
-        {
-          cout << "Show more sent emails? (y/n): ";
-          cin >> choice;
-
-          // Validate input
-          if (choice != 'y' && choice != 'Y' && choice != 'n' && choice != 'N')
-          {
-            cout << "Invalid input. Please enter 'y' or 'n'.\n";
-          }
-        } while (choice != 'y' && choice != 'Y' && choice != 'n' && choice != 'N');
-
-        continueShowing = (choice == 'y' || choice == 'Y');
-        shownCount = 0; // Reset count for the next set of 10 emails
-      }
-
-      curr = curr->next; // Move to the next email
-    }
-
-    // Check if end of list is reached
-    if (curr == nullptr)
-    {
-      cout << "End of sent emails reached.\n";
     }
   }
 };

@@ -57,6 +57,52 @@ public:
     }
   }
 
+  void showEmails(string inboxName)
+  {
+    if (isEmpty()){
+      cout << "You have no " << inboxName << "." << endl;
+      return;
+    }
+    Node *curr = top;
+    bool shown = false;
+    int shownCount = 0;
+    bool continueShowing = true;
+    while (curr != nullptr && continueShowing)
+    {
+      cout << "From: " << curr->data.sender << endl;
+      cout << "Date: " << curr->data.date << endl;
+      cout << "Subject: " << curr->data.subject << endl;
+      cout << "Body: " << curr->data.body << endl;
+      cout << "------------------" << endl;
+
+      shownCount++;
+      curr = curr->next;
+
+      if (shownCount == 10)
+      {
+        // Prompt user to continue or stop with validation
+        char choice;
+        do
+        {
+          cout << "Show more emails? (y/n): ";
+          cin >> choice;
+
+          // Validate input
+          if (choice != 'y' && choice != 'Y' && choice != 'n' && choice != 'N')
+          {
+            cout << "Invalid input. Please enter 'y' or 'n'.\n";
+          }
+        } while (choice != 'y' && choice != 'Y' && choice != 'n' && choice != 'N');
+
+        continueShowing = (choice == 'y' || choice == 'Y');
+        shownCount = 0; // Reset count for the next set of 10 emails
+      }
+    }
+    if (curr == nullptr){
+      cout << "End of "<< inboxName <<  " reached.\n";
+    }
+  }
+
   // Destructor
   ~EmailStack()
   {
