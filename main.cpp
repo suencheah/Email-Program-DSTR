@@ -5,6 +5,7 @@
 #include "Email.h"
 #include "EmailStack.h"
 #include "User.h"
+#include "EmailSearch.h"
 
 using namespace std;
 
@@ -20,6 +21,12 @@ int main()
   // myUser.normalEmails.showEmails("normal mails");
   // myUser.spamEmails.showEmails("spam mails");
   // myUser.sentEmails.showEmails("sent mails");
+
+    // Test search functionality
+    string keyword;
+    cout << "Enter keyword to search for: ";
+    cin >> keyword;
+    EmailSearch::searchEmails(myUser, keyword, "all");
 
   return 0;
 }
