@@ -1,26 +1,27 @@
-Sender,Recipient,Subject,Date,Priority,Body
-jamie@mail.com,meisuen@apu.com,Win Big with Our Exclusive Offer,a,SPAM,Congratulations! You've been selected to win a prize worth up to $5000. Act now to claim your gift!
-jamie@mail.com,meisuen@apu.com,Earn Cash from Home - Easy Money!,b,SPAM,Start making money from the comfort of your home. Join us and earn cash instantly!
-jamie@mail.com,meisuen@apu.com,Act Now - Free Gift Just for You!,c,SPAM,Get a free gift with every purchase! Don't miss this limited-time offer to save big!
-jamie@mail.com,meisuen@apu.com,Clearance Sale - Prices Slashed!,a,NORMAL,Don't miss our clearance sale with items priced as low as $1. Order now and save big!
-jamie@mail.com,meisuen@apu.com,Important - Consolidate Your Debt Today,b,NORMAL,Tired of high interest rates? Consolidate your debt now and get peace of mind. Contact us to learn more.
-jamie@mail.com,meisuen@apu.com,Cash Prize Waiting for You!,c,SPAM,You've been selected for a cash prize. Claim now and see how much you can win!
-jamie@mail.com,meisuen@apu.com,Eliminate Bad Credit Fast!,a,NORMAL,Say goodbye to bad credit with our easy and fast credit repair service. Start today for only $19.99!
-jamie@mail.com,meisuen@apu.com,Work from Home and Earn Big!,b,NORMAL,Make thousands every month by working from home. Join millions who are already benefiting!
-jamie@mail.com,meisuen@apu.com,Urgent: Final Notice for Free Consultation,c,SPAM,Don't miss your chance to get a free consultation with our experts. Act now!
-jamie@mail.com,meisuen@apu.com,Limited Time - FREE Membership!,a,SPAM,"For a limited time, get a free membership and start enjoying exclusive benefits today."
-jamie@mail.com,meisuen@apu.com,Only for You - No Obligation Trial,b,SPAM,Enjoy a free trial without any obligation. Discover how our services can help you!
-jamie@mail.com,meisuen@apu.com,Best Price Guaranteed on All Purchases,c,NORMAL,We offer the best prices around! Buy now and enjoy our satisfaction guarantee.
-jamie@mail.com,meisuen@apu.com,Free iPhone! Claim Yours Today,a,SPAM,Get a free iPhone when you sign up for our service. Supplies are limited!
-jamie@mail.com,meisuen@apu.com,Don’t Miss Out! Huge Discount Inside,b,NORMAL,Our biggest sale of the year is here. Claim up to 50% off on select items.
-jamie@mail.com,meisuen@apu.com,This Isn’t Junk - Earn Rewards Now,c,NORMAL,Earn rewards on every purchase. Open now to start saving big on your favorite items!
-jamie@mail.com,meisuen@apu.com,New Workstation Guidelines,a,NORMAL,Please review the new workstation guidelines for a more organized workspace.
-jamie@mail.com,meisuen@apu.com,Workshop on Productivity Hacks,b,NORMAL,Join us for a workshop on productivity hacks next week. Register here!
-jamie@mail.com,meisuen@apu.com,FYI: New Office Policies Effective Monday,c,NORMAL,Please review the new office policies that will be effective starting Monday.
-jamie@mail.com,meisuen@apu.com,Staff Party Next Week! Save the Date,a,NORMAL,Join us for the staff party next Friday. Food and drinks provided!
-jamie@mail.com,meisuen@apu.com,Project Kickoff Next Tuesday,b,NORMAL,We're kicking off the project next Tuesday. Looking forward to your ideas.
-jamie@mail.com,meisuen@apu.com,Project Discussion,c,NORMAL,Let's meet to go over our latest project details. This session will help us align on goals and address any current needs.
-jamie@mail.com,meisuen@apu.com,Webinar: Communication Tips,a,NORMAL,We're holding a brief webinar focused on team communication. It's a chance to learn new strategies and connect with others.
-jamie@mail.com,meisuen@apu.com,Project Update Required,b,NORMAL,The project update is really urgent. We're holding a brief webinar focused on team communication. It's a chance to learn new strategies and connect with others.
-jamie@mail.com,meisuen@apu.com,Reminder: Upcoming Webinar on Communication Tips,c,NORMAL,Just a reminder to join our webinar on team communication tips. It's a great opportunity to learn new strategies and connect with others.
-jamie@mail.com,meisuen@apu.com,Important Reminder: Project Update and Critical Task Review,a,NORMAL,This is a reminder for our scheduled project update meeting. Your input is crucial as we review a few critical tasks and updates that need to be addressed promptly.
+Sender,Recipient,Subject,Date,Priority,Body,Status
+jamie@mail.com,meisuen@apu.com,Win Big with Our Exclusive Offer,a,SPAM,Congratulations! You've been selected to win a prize worth up to $5000. Act now to claim your gift!,Sent
+jamie@mail.com,meisuen@apu.com,Earn Cash from Home - Easy Money!,b,SPAM,Start making money from the comfort of your home. Join us and earn cash instantly!,Sent
+jamie@mail.com,meisuen@apu.com,Act Now - Free Gift Just for You!,c,SPAM,Get a free gift with every purchase! Don't miss this limited-time offer to save big!,Sent
+jamie@mail.com,meisuen@apu.com,Clearance Sale - Prices Slashed!,a,NORMAL,Don't miss our clearance sale with items priced as low as $1. Order now and save big!,Pending
+jamie@mail.com,meisuen@apu.com,Important - Consolidate Your Debt Today,b,NORMAL,Tired of high interest rates? Consolidate your debt now and get peace of mind. Contact us to learn more.,Sent
+jamie@mail.com,meisuen@apu.com,Cash Prize Waiting for You!,c,SPAM,You've been selected for a cash prize. Claim now and see how much you can win!,Sent
+jamie@mail.com,meisuen@apu.com,Eliminate Bad Credit Fast!,a,NORMAL,Say goodbye to bad credit with our easy and fast credit repair service. Start today for only $19.99!,Sent
+jamie@mail.com,meisuen@apu.com,Work from Home and Earn Big!,b,NORMAL,Make thousands every month by working from home. Join millions who are already benefiting!,Sent
+jamie@mail.com,meisuen@apu.com,Urgent: Final Notice for Free Consultation,c,SPAM,Don't miss your chance to get a free consultation with our experts. Act now!,Sent
+jamie@mail.com,meisuen@apu.com,Limited Time - FREE Membership!,a,SPAM,"For a limited time, get a free membership and start enjoying exclusive benefits today.",Sent
+jamie@mail.com,meisuen@apu.com,Only for You - No Obligation Trial,b,SPAM,Enjoy a free trial without any obligation. Discover how our services can help you!,Sent
+jamie@mail.com,meisuen@apu.com,Best Price Guaranteed on All Purchases,c,NORMAL,We offer the best prices around! Buy now and enjoy our satisfaction guarantee.,Sent
+jamie@mail.com,meisuen@apu.com,Free iPhone! Claim Yours Today,a,SPAM,Get a free iPhone when you sign up for our service. Supplies are limited!,Sent
+jamie@mail.com,meisuen@apu.com,Don’t Miss Out! Huge Discount Inside,b,NORMAL,Our biggest sale of the year is here. Claim up to 50% off on select items.,Sent
+jamie@mail.com,meisuen@apu.com,This Isn’t Junk - Earn Rewards Now,c,NORMAL,Earn rewards on every purchase. Open now to start saving big on your favorite items!,Pending
+jamie@mail.com,meisuen@apu.com,New Workstation Guidelines,a,NORMAL,Please review the new workstation guidelines for a more organized workspace.,Sent
+jamie@mail.com,meisuen@apu.com,Workshop on Productivity Hacks,b,NORMAL,Join us for a workshop on productivity hacks next week. Register here!,Sent
+jamie@mail.com,meisuen@apu.com,FYI: New Office Policies Effective Monday,c,NORMAL,Please review the new office policies that will be effective starting Monday.,Pending
+jamie@mail.com,meisuen@apu.com,Staff Party Next Week! Save the Date,a,NORMAL,Join us for the staff party next Friday. Food and drinks provided!,Sent
+jamie@mail.com,meisuen@apu.com,Project Kickoff Next Tuesday,b,NORMAL,We're kicking off the project next Tuesday. Looking forward to your ideas.,Sent
+jamie@mail.com,meisuen@apu.com,Project Discussion,c,NORMAL,Let's meet to go over our latest project details. This session will help us align on goals and address any current needs.,Sent
+jamie@mail.com,meisuen@apu.com,Webinar: Communication Tips,a,NORMAL,We're holding a brief webinar focused on team communication. It's a chance to learn new strategies and connect with others.,Sent
+jamie@mail.com,meisuen@apu.com,Project Update Required,b,NORMAL,The project update is really urgent. We're holding a brief webinar focused on team communication. It's a chance to learn new strategies and connect with others.,Sent
+jamie@mail.com,meisuen@apu.com,Reminder: Upcoming Webinar on Communication Tips,c,NORMAL,Just a reminder to join our webinar on team communication tips. It's a great opportunity to learn new strategies and connect with others.,Sent
+jamie@mail.com,meisuen@apu.com,Important Reminder: Project Update and Critical Task Review,a,NORMAL,This is a reminder for our scheduled project update meeting. Your input is crucial as we review a few critical tasks and updates that need to be addressed promptly.,Sent
+jamie@mail.com,meisuen@apu.com,Meeting Reminder,,NORMAL,Remember we will have meeting this upcoming Wednesday,Pending
