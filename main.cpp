@@ -29,4 +29,4 @@ int main()
     EmailSearch::searchEmails(myUser, keyword, "all");
 
   return 0;
-}
+}//

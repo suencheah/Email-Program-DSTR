@@ -317,4 +317,4 @@ private:
       cerr << "Unable to update pending emails file." << endl;
     }
   }
-};
+};//

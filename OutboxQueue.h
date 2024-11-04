@@ -80,4 +80,4 @@ public:
     // After sent successfully, dequeue email from outbox
 
   }
-};
+};//
