@@ -19,6 +19,7 @@ class User
 public:
   string email;
   string dataFilePath;
+  EmailStack deletedEmails;
   EmailStack importantEmails;
   EmailStack normalEmails;
   EmailStack spamEmails;
@@ -32,7 +33,7 @@ public:
   User(string userEmail) : email(userEmail), dataFilePath("DataFiles/" + userEmail + ".csv")
   {
     receiveEmails();
-    getUserEmails(dataFilePath);
+    getUserEmails();
   }
 
   static bool isRegistered(string const &email)
@@ -69,20 +70,20 @@ public:
     return false;
   }
 
-  static void registerNewUser(string email, string password)
+  bool static registerNewUser(string email, string password)
   {
     bool userIsAlreadyRegistered = isRegistered(email);
     if (userIsAlreadyRegistered)
     {
       cerr << "Your email is already registered, please proceed to login." << endl;
-      return;
+      return false;
     }
     // Add user credentials into text file
     ofstream credentialsFile("DataFiles/userCredentials.txt", ios::app);
     if (!credentialsFile.is_open())
     {
       std::cerr << "Unable to open user email file for appending." << std::endl;
-      return;
+      return false;
     }
     credentialsFile << email << "," << password << "\n";
 
@@ -99,6 +100,8 @@ public:
     {
       cerr << "Failed to create data file for user." << endl;
     }
+
+    return true;
   };
 
   bool static authenticateUser(const string inputEmail, const string inputPassword)
@@ -130,7 +133,7 @@ public:
             {
               authenticated = true;
               cout << "Login successful." << endl;
-              break;
+              return true;
             }
           }
         }
@@ -279,11 +282,10 @@ public:
     cout << "Email sent and status updated.\n";
   }
 
-private:
-  void getUserEmails(string userDataFilePath)
+  void getUserEmails()
   {
     // EmailStack userEmails;
-    ifstream userEmailFile(userDataFilePath);
+    ifstream userEmailFile(dataFilePath);
 
     // Get all Emails from CSV file
     if (userEmailFile.is_open())
@@ -313,38 +315,50 @@ private:
           // cout<< currEmail.body << endl;
 
           currEmail.priority = Helper::stringToEmailPriority(priorityString);
-          if (currEmail.recipient == email)
+          if (currEmail.priority == UNASSIGNED)
           {
-            if (currEmail.priority == UNASSIGNED)
-            {
-              currEmail.detectEmailPriority();
-            }
-            switch (currEmail.priority)
-            {
-            case IMPORTANT:
-              importantEmails.push(currEmail);
-              break;
-            case NORMAL:
-              normalEmails.push(currEmail);
-              break;
-            case SPAM:
-              spamEmails.push(currEmail);
-              break;
-
-            default:
-              break;
-            }
+            currEmail.detectEmailPriority();
           }
-          else if (currEmail.sender == email)
+
+          if (currEmail.priority == DELETED)
           {
-            if (currEmail.status == "Sent")
+            deletedEmails.push(currEmail);
+          }
+          else
+          {
+            if (currEmail.recipient == email)
             {
-              cout << "found sent email" << endl;
-              sentEmails.push(currEmail);
+              if (currEmail.priority == UNASSIGNED)
+              {
+                currEmail.detectEmailPriority();
+              }
+              switch (currEmail.priority)
+              {
+              case IMPORTANT:
+                importantEmails.push(currEmail);
+                break;
+              case NORMAL:
+                normalEmails.push(currEmail);
+                break;
+              case SPAM:
+                spamEmails.push(currEmail);
+                break;
+
+              default:
+                break;
+              }
             }
-            else if (currEmail.status == "Pending")
+            else if (currEmail.sender == email)
             {
-              outbox.enqueue(currEmail);
+              if (currEmail.status == "Sent")
+              {
+                // cout << "found sent email" << endl;
+                sentEmails.push(currEmail);
+              }
+              else if (currEmail.status == "Pending")
+              {
+                outbox.enqueue(currEmail);
+              }
             }
           }
         }
