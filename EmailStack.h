@@ -57,7 +57,7 @@ public:
     }
   }
 
-  void showEmails(string inboxName)
+  void showEmailsBy10(string inboxName)
   {
     if (isEmpty()){
       cout << "You have no " << inboxName << "." << endl;
