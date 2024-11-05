@@ -12,7 +12,8 @@ enum EmailPriority
   IMPORTANT,
   NORMAL,
   SPAM,
-  UNASSIGNED
+  UNASSIGNED,
+  DELETED
 };
 
 struct Helper
@@ -43,48 +44,33 @@ struct Helper
       return s;
   }
 
-  #include <iostream>
+#include <iostream>
 #include <sstream>
 #include <string>
 
-    static void parseCSVLine(const std::string &line, std::string &sender, std::string &recipient,
-                             std::string &subject, std::string &date, std::string &priority,
-                             std::string &body, std::string &status) {
-        std::istringstream stream(line);
-        std::string temp;
-        bool inQuotes = false;
-        int fieldCount = 0;
-
-        while (std::getline(stream, temp, ',')) {
-            // Handle quotes
-            if (temp.front() == '"' && temp.back() == '"') {
-                temp = temp.substr(1, temp.size() - 2); // Remove surrounding quotes
-            } else if (temp.front() == '"') {
-                inQuotes = true;
-                temp = temp.substr(1); // Remove starting quote
+  static void parseCSVLine(const std::string &line, std::string &sender, std::string &recipient,
+                         std::string &subject, std::string &date, std::string &priority,
+                         std::string &body, std::string &status)
+{
+    std::string temp;
+    bool inQuotes = false;
+    int fieldCount = 0;
+    
+    for (size_t i = 0; i < line.size(); ++i) {
+        char currentChar = line[i];
+        
+        // Check if we’re entering or exiting a quoted section
+        if (currentChar == '"') {
+            if (inQuotes && i + 1 < line.size() && line[i + 1] == '"') {
+                // Handle escaped quote ("" -> ")
+                temp += '"';
+                ++i;  // Skip the next quote
+            } else {
+                // Toggle the inQuotes flag
+                inQuotes = !inQuotes;
             }
-
-            if (inQuotes) {
-                // Continue reading until we find the closing quote
-                std::string next;
-                while (std::getline(stream, next, ',')) {
-                    temp += ',' + next; // Append to the current field
-                    if (next.back() == '"') {
-                        inQuotes = false;
-                        temp = temp.substr(0, temp.size() - 1); // Remove closing quote
-                        break;
-                    }
-                }
-            }
-
-            // Replace escaped quotes
-            size_t pos = 0;
-            while ((pos = temp.find("\"\"", pos)) != std::string::npos) {
-                temp.replace(pos, 2, "\"");
-                pos++; // Move past the replacement
-            }
-
-            // Assign fields based on count
+        } else if (currentChar == ',' && !inQuotes) {
+            // If we hit a comma and we're not inside quotes, finalize the current field
             switch (fieldCount) {
                 case 0: sender = temp; break;
                 case 1: recipient = temp; break;
@@ -94,10 +80,25 @@ struct Helper
                 case 5: body = temp; break;
                 case 6: status = temp; break;
             }
-            fieldCount++;
+            temp.clear();  // Clear temp for the next field
+            fieldCount++;  // Move to the next field
+        } else {
+            // Regular character, add to current field content
+            temp += currentChar;
         }
     }
 
+    // Assign the last field after the loop
+    switch (fieldCount) {
+        case 0: sender = temp; break;
+        case 1: recipient = temp; break;
+        case 2: subject = temp; break;
+        case 3: date = temp; break;
+        case 4: priority = temp; break;
+        case 5: body = temp; break;
+        case 6: status = temp; break;
+    }
+}
 
 
   static EmailPriority stringToEmailPriority(string priorityString)
@@ -113,6 +114,10 @@ struct Helper
     else if (priorityString == "SPAM")
     {
       return SPAM;
+    }
+    else if (priorityString == "DELETED")
+    {
+      return DELETED;
     }
     else
     {
@@ -132,6 +137,8 @@ struct Helper
       return "SPAM";
     case UNASSIGNED:
       return "UNASSIGNED";
+    case DELETED:
+      return "DELETED";
     default:
       return "UNASSIGNED";
     }

@@ -110,11 +110,7 @@ public:
             rear->next = newEmailNode;
             rear = newEmailNode;
         }
-
-        cout << "Email added to queue with status: " << newEmailNode->data.status;
-        cout << " and priority: ";
-        cout << Helper::EmailPriorityToString(newEmailNode->data.priority);
-        cout << "\n";
+        cout << "enqueued" << endl;
     }
 
     Email dequeue()
