@@ -1,30 +1,36 @@
+#ifndef USER_H // Include guard
+#define USER_H
+
 #include <string>
 #include <iostream>
 #include <fstream>
 #include "HelperFunctions.h"
 #include "EmailStack.h"
+#include "Outbox.h"
 
 using namespace std;
 
+// Forward declaration of EmailQueue
+class EmailQueue;
+
 class User
 {
-  string dataFilePath;
 
 public:
   string email;
+  string dataFilePath;
   EmailStack importantEmails;
   EmailStack normalEmails;
   EmailStack spamEmails;
   EmailStack sentEmails;
+  EmailQueue outbox;
 
 public:
-  // Constructors
-  User() : email(""), dataFilePath("") {};
+  // no more default Constructors
+  // User() : email(""), dataFilePath("") {};
 
-  User(string userEmail)
+  User(string userEmail) : email(userEmail), dataFilePath("DataFiles/" + userEmail + ".csv")
   {
-    email = userEmail;
-    dataFilePath = "DataFiles/" + userEmail + ".csv";
     receiveEmails();
     getUserEmails(dataFilePath);
   }
@@ -134,12 +140,143 @@ public:
         }
       }
     }
-    if (!emailMatched) {
+    if (!emailMatched)
+    {
       cerr << "Your email is not registered." << endl;
-    }else{
+    }
+    else
+    {
       cout << "Wrong credentials entered." << endl;
     }
     return authenticated;
+  }
+
+  void appendOutgoingEmailToCSV(const Email &email)
+  {
+    ofstream file(dataFilePath, ios::app);
+    if (file.is_open())
+    {
+      string tempString = email.FormatEmailToCsvLine();
+      file << tempString;
+      file.close();
+    }
+    else
+    {
+      cout << "Error: Unable to save to CSV file!" << endl;
+    }
+  }
+
+  void updateEmailStatusInCSV(Email currEmail, const string &newStatus)
+  {
+    ifstream inFile(dataFilePath);
+    ofstream tempFile("temp.csv");
+
+    string line;
+    getline(inFile, line);
+    tempFile << "Sender,Recipient,Subject,Date,Priority,Body,Status\n";
+
+    while (getline(inFile, line))
+    {
+      stringstream ss(line);
+      string sender, recipient, subject, date, priorityString, body, status;
+
+      getline(ss, sender, ',');
+      getline(ss, recipient, ',');
+      getline(ss, subject, ',');
+      getline(ss, date, ',');
+      getline(ss, priorityString, ',');
+      getline(ss, body, ',');
+      getline(ss, status);
+
+      if (sender == currEmail.sender && recipient == currEmail.recipient && date == currEmail.date && subject == currEmail.subject)
+      {
+        currEmail.status = newStatus;
+        string csvString = currEmail.FormatEmailToCsvLine();
+        tempFile << csvString;
+      }
+      else
+      {
+        tempFile << line << "\n";
+      }
+      // }
+    }
+
+    inFile.close();
+    tempFile.close();
+    remove(dataFilePath.c_str());
+    rename("temp.csv", dataFilePath.c_str());
+  }
+  void updateEmailPriorityInCSV(Email currEmail, const EmailPriority &newPriority)
+  {
+    ifstream inFile(dataFilePath);
+    ofstream tempFile("temp.csv");
+
+    string line;
+    getline(inFile, line);
+    tempFile << "Sender,Recipient,Subject,Date,Priority,Body,Status\n";
+
+    while (getline(inFile, line))
+    {
+      stringstream ss(line);
+      string sender, recipient, subject, date, priorityString, body, status;
+
+      getline(ss, sender, ',');
+      getline(ss, recipient, ',');
+      getline(ss, subject, ',');
+      getline(ss, date, ',');
+      getline(ss, priorityString, ',');
+      getline(ss, body, ',');
+      getline(ss, status);
+
+      if (sender == currEmail.sender && recipient == currEmail.recipient && date == currEmail.date && subject == currEmail.subject)
+      {
+        currEmail.priority = newPriority;
+        string csvString = currEmail.FormatEmailToCsvLine();
+        tempFile << csvString;
+      }
+      else
+      {
+        tempFile << line << "\n";
+      }
+      // }
+    }
+
+    inFile.close();
+    tempFile.close();
+    remove(dataFilePath.c_str());
+    rename("temp.csv", dataFilePath.c_str());
+  }
+
+  void sendFirstEmail(Email toSend)
+  {
+    cout << "\nSending Email:\n";
+    cout << "From: " << toSend.sender << "\n";
+    cout << "To: " << toSend.recipient << "\n";
+    cout << "Subject: " << toSend.subject << "\n";
+    cout << "Body: " << toSend.body << "\n";
+    // cout << "Priority: ";
+    // switch (toSend.priority)
+    // {
+    // case SPAM:
+    //     cout << "SPAM";
+    //     break;
+    // case NORMAL:
+    //     cout << "NORMAL";
+    //     break;
+    // case IMPORTANT:
+    //     cout << "IMPORTANT";
+    //     break;
+    // default:
+    //     cout << "UNASSIGNED";
+    //     break;
+    // }
+    cout << "\n\n";
+
+    updateEmailStatusInCSV(toSend, "Sent");
+
+    sentEmails.push(toSend);
+
+    cout << "Email sent and status updated.\n";
   }
 
 private:
@@ -160,18 +297,22 @@ private:
       {
         try
         {
-          stringstream ss(line);
+          // stringstream ss(line);
+          // string sender, recipient, subject, date, body, priorityString, status;
           Email currEmail;
           string priorityString;
+          Helper::parseCSVLine(line, currEmail.sender, currEmail.recipient, currEmail.subject, currEmail.date, priorityString, currEmail.body, currEmail.status);
 
-          getline(ss, currEmail.sender, ',');
-          getline(ss, currEmail.recipient, ',');
-          getline(ss, currEmail.subject, ',');
-          getline(ss, currEmail.date, ',');
-          getline(ss, priorityString, ',');
-          getline(ss, currEmail.body);
+          // getline(ss, currEmail.sender, ',');
+          // getline(ss, currEmail.recipient, ',');
+          // getline(ss, currEmail.subject, ',');
+          // getline(ss, currEmail.date, ',');
+          // getline(ss, priorityString, ',');
+          // getline(ss, currEmail.body, ',');
+          // getline(ss, currEmail.status);
+          // cout<< currEmail.body << endl;
 
-          currEmail.priority = stringToEmailPriority(priorityString);
+          currEmail.priority = Helper::stringToEmailPriority(priorityString);
           if (currEmail.recipient == email)
           {
             if (currEmail.priority == UNASSIGNED)
@@ -196,7 +337,15 @@ private:
           }
           else if (currEmail.sender == email)
           {
-            sentEmails.push(currEmail);
+            if (currEmail.status == "Sent")
+            {
+              cout << "found sent email" << endl;
+              sentEmails.push(currEmail);
+            }
+            else if (currEmail.status == "Pending")
+            {
+              outbox.enqueue(currEmail);
+            }
           }
         }
         catch (const exception &e)
@@ -230,13 +379,6 @@ private:
     // Get pending emails
     if (pendingEmails.is_open())
     {
-      // char bom[3];
-      // pendingEmails.read(bom, 3);
-      // if (!(bom[0] == '\xEF' && bom[1] == '\xBB' && bom[2] == '\xBF'))
-      // {
-      //   // No BOM, reset the position to the beginning
-      //   pendingEmails.seekg(0);
-      // }
       string line;
 
       // Skip and store column header
@@ -258,14 +400,15 @@ private:
           getline(ss, currEmail.subject, ',');
           getline(ss, currEmail.date, ',');
           getline(ss, priorityString, ',');
-          getline(ss, currEmail.body);
+          getline(ss, currEmail.body, ',');
+          getline(ss, currEmail.status);
           // cout << "HERE1---" << currEmail.body << endl;
 
           // If user is recipient
           if (currEmail.recipient == email)
           {
             // Detect priority
-            currEmail.priority = stringToEmailPriority(priorityString);
+            currEmail.priority = Helper::stringToEmailPriority(priorityString);
 
             if (currEmail.priority == UNASSIGNED)
             {
@@ -273,18 +416,22 @@ private:
             }
 
             // Append received email into user's file
-            userFile << currEmail.sender;
-            userFile << ",";
-            userFile << currEmail.recipient;
-            userFile << ",";
-            userFile << currEmail.subject;
-            userFile << ",";
-            userFile << currEmail.date;
-            userFile << ",";
-            userFile << EmailPriorityToString(currEmail.priority);
-            userFile << ",";
-            userFile << currEmail.body;
-            userFile << "\n";
+            string tempString = currEmail.FormatEmailToCsvLine();
+            userFile << tempString;
+            // userFile << currEmail.sender;
+            // userFile << ",";
+            // userFile << currEmail.recipient;
+            // userFile << ",";
+            // userFile << currEmail.subject;
+            // userFile << ",";
+            // userFile << currEmail.date;
+            // userFile << ",";
+            // userFile << Helper::EmailPriorityToString(currEmail.priority);
+            // userFile << ",";
+            // userFile << currEmail.body;
+            // userFile << ",";
+            // userFile << currEmail.status;
+            // userFile << "\n";
           }
           else
           {
@@ -317,4 +464,7 @@ private:
       cerr << "Unable to update pending emails file." << endl;
     }
   }
-};//
+
+}; //
+
+#endif // USER_H

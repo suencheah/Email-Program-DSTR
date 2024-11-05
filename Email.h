@@ -9,20 +9,27 @@ using namespace std;
 
 struct Email
 {
+  public:
   string sender;
   string recipient;
   string subject;
   string body;
   string date;
   EmailPriority priority;
+  string status;
 
   // Default Constructor
-  Email() : sender(""), recipient(""), subject(""), body(""), date(""), priority(UNASSIGNED) {};
+  Email() : sender(""), recipient(""), subject(""), body(""), date(""), priority(UNASSIGNED), status("") {};
 
   // Constructor
-  Email(string senderEmailAdd, string recipientEmailAdd, string subjectLine, string bodyContent, string emaildate, EmailPriority emailPriority)
+  Email(string senderEmailAdd, string recipientEmailAdd, string subjectLine, string bodyContent, string emailDate, string st = "Pending", EmailPriority emailPriority = UNASSIGNED)
       : sender(senderEmailAdd), recipient(recipientEmailAdd), subject(subjectLine), body(bodyContent),
-        date(emaildate), priority(emailPriority) {};
+        date(emailDate), priority(emailPriority), status(st)
+  {
+    if (priority == UNASSIGNED){
+      detectEmailPriority();
+    }
+  };
 
   void detectEmailPriority()
   {
@@ -102,4 +109,11 @@ struct Email
     }
     // cout << to_string(score) << endl;
   }
-};//
+
+  string FormatEmailToCsvLine() const
+  {
+    return sender + "," + recipient + "," + Helper::output_csv(subject) + "," + date + "," + Helper::EmailPriorityToString(priority) + "," + Helper::output_csv(body) + "," + status + "\n";
+  }
+
+  
+}; //

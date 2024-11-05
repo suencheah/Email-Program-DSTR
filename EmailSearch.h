@@ -24,7 +24,7 @@ public:
     else
     {
       cout << "Displaying matched emails for keyword \"" << keyword << "\" in " << searchType << ":\n";
-      matchedEmails.showEmails("matched emails");
+      matchedEmails.showEmailsBy10("matched emails");
     }
   }
 
