@@ -124,6 +124,8 @@ bool mainMenu(User user)
   // Compose and Send Email
   case 1:
     composeEmail(user);
+    cout << "done2" << endl;
+    mainMenu(user);
     break;
   //  View Inbox (list)
   case 2:
@@ -164,6 +166,7 @@ bool mainMenu(User user)
   // View Sent Emails
   case 4:
     user.sentEmails.showEmailsBy10("sent emails");
+    mainMenu(user);
     break;
   // View Recycle Bin
   case 5:
@@ -220,6 +223,8 @@ void composeEmail(User user)
   string date = Helper::getCurrentTimestamp();
   Email newEmail = Email(user.email, to, subject, body, date);
   sendEmailToOutbox(user, newEmail);
+  // cout << "Done" << endl;
+  // mainMenu(user);
 }
 
 void userSearchEmails(User user)
@@ -246,7 +251,7 @@ void userSearchEmails(User user)
     searchResults = EmailSearch::searchEmails(user, keyword, "sender");
     break;
   case 2:
-    searchResults = EmailSearch::searchEmails(user, keyword, "recipient");
+    searchResults = EmailSearch::searchEmails(user, keyword, "receiver");
     break;
   case 3:
     searchResults = EmailSearch::searchEmails(user, keyword, "subject");
@@ -259,7 +264,8 @@ void userSearchEmails(User user)
     break;
   case 6:
     mainMenu(user);
-    break;;
+    break;
+    ;
   }
   showIndividualEmails(searchResults, user, "search results");
   mainMenu(user);
@@ -280,7 +286,6 @@ void replyToEmail(User user, string targetRecipient)
   string date = Helper::getCurrentTimestamp();
   Email newEmail = Email(user.email, targetRecipient, subject, body, date);
   sendEmailToOutbox(user, newEmail);
-  mainMenu(user);
   // return;
 }
 
@@ -290,6 +295,9 @@ void sendEmailToOutbox(User user, const Email newEmail)
   cout << "\nEmail added to outbox queue with status: " << newEmail.status;
   user.appendOutgoingEmailToCSV(newEmail);
   cout << "\nPlease manually send from outbox.\n\n";
+
+  // cout << "done1.5" << endl;
+  mainMenu(user);
 }
 
 bool manageEmail(Email &email, User &user)
@@ -420,6 +428,7 @@ int promptIntInput(int start, int end)
       else
       {
         validInput = true;
+        cout << endl;
         return choice;
       }
     }
