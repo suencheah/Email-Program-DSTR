@@ -59,6 +59,7 @@ public:
 
   void showEmailsBy10(string inboxName)
   {
+    EmailStack tempStack = *this;
     if (isEmpty()){
       cout << "You have no " << inboxName << "." << endl;
       return;
@@ -67,16 +68,16 @@ public:
     bool shown = false;
     int shownCount = 0;
     bool continueShowing = true;
-    while (curr != nullptr && continueShowing)
+    while (!tempStack.isEmpty() && continueShowing)
     {
-      cout << "From: " << curr->data.sender << endl;
-      cout << "Date: " << curr->data.date << endl;
-      cout << "Subject: " << curr->data.subject << endl;
-      cout << "Body: " << curr->data.body << endl;
+      Email curr = tempStack.pop();
+      cout << "From: " << curr.sender << endl;
+      cout << "Date: " << curr.date << endl;
+      cout << "Subject: " << curr.subject << endl;
+      cout << "Body: " << curr.body << endl;
       cout << "------------------" << endl;
 
       shownCount++;
-      curr = curr->next;
 
       if (shownCount == 10)
       {
@@ -98,7 +99,7 @@ public:
         shownCount = 0; // Reset count for the next set of 10 emails
       }
     }
-    if (curr == nullptr){
+    if (tempStack.isEmpty()){
       cout << "End of "<< inboxName <<  " reached.\n";
     }
   }

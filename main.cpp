@@ -11,6 +11,7 @@ using namespace std;
 int promptIntInput(int start, int end);
 bool mainMenu(User user);
 void composeEmail(User user);
+void userSearchEmails(User user);
 void replyToEmail(User user, string targetRecipient);
 void sendEmailToOutbox(User user, Email newEmail);
 void showIndividualEmails(EmailStack &stack, User &user, string inboxName);
@@ -186,7 +187,7 @@ bool mainMenu(User user)
     break;
   // Search Emails
   case 8:
-    // searchEmails(user); // todo
+    userSearchEmails(user);
     break;
   // Log Out
   case 9:
@@ -221,6 +222,49 @@ void composeEmail(User user)
   sendEmailToOutbox(user, newEmail);
 }
 
+void userSearchEmails(User user)
+{
+  int searchCriteria;
+  cout << "Please chose criteria for searching: \n";
+  cout << "1. Sender email\n";
+  cout << "2. Recipient email\n";
+  cout << "3. Email Subject\n";
+  cout << "4. Content\n";
+  cout << "5. All\n";
+  cout << "6. Back to main menu\n";
+  searchCriteria = promptIntInput(1, 6);
+
+  string keyword;
+  cout << "Please enter keyword for searching: ";
+  getline(cin, keyword);
+
+  EmailStack searchResults;
+
+  switch (searchCriteria)
+  {
+  case 1:
+    searchResults = EmailSearch::searchEmails(user, keyword, "sender");
+    break;
+  case 2:
+    searchResults = EmailSearch::searchEmails(user, keyword, "recipient");
+    break;
+  case 3:
+    searchResults = EmailSearch::searchEmails(user, keyword, "subject");
+    break;
+  case 4:
+    searchResults = EmailSearch::searchEmails(user, keyword, "body");
+    break;
+  case 5:
+    searchResults = EmailSearch::searchEmails(user, keyword, "all");
+    break;
+  case 6:
+    mainMenu(user);
+    break;;
+  }
+  showIndividualEmails(searchResults, user, "search results");
+  mainMenu(user);
+}
+
 void replyToEmail(User user, string targetRecipient)
 {
   string subject, body;
@@ -236,7 +280,8 @@ void replyToEmail(User user, string targetRecipient)
   string date = Helper::getCurrentTimestamp();
   Email newEmail = Email(user.email, targetRecipient, subject, body, date);
   sendEmailToOutbox(user, newEmail);
-  return;
+  mainMenu(user);
+  // return;
 }
 
 void sendEmailToOutbox(User user, const Email newEmail)
@@ -343,10 +388,14 @@ void showIndividualEmails(EmailStack &stack, User &user, string inboxName)
     return;
   }
   Node *currEmail = stack.top;
-  while (viewNext)
+  while (viewNext && currEmail != nullptr)
   {
     viewNext = manageEmail(currEmail->data, user);
     currEmail = currEmail->next;
+  }
+  if (viewNext && currEmail == nullptr)
+  {
+    cout << "You have reached the end of " << inboxName << "." << endl;
   }
 }
 
