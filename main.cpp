@@ -28,12 +28,107 @@ void showIndividualEmails(EmailStack &stack, User &user, string inboxName);
 //   cout << priority << endl;
 //   cout << body << endl;
 //   cout << status << endl;
+//   string test = "meisuen@apu.com,angelina@apu.com,\"test \"\"hi\"\" and , are u ok?\",05-11-2024 19:36,IMPORTANT,\"TESTTTTTT \"\"WOW\"\", \"\"COOL\"\", amazing\",Pending";
+//   string sender, recipient, subject, date, body, priority, status;
+//   Helper::parseCSVLine(test, sender, recipient, subject, date, priority, body, status);
+//   cout << sender << endl;
+//   cout << recipient << endl;
+//   cout << subject << endl;
+//   cout << date << endl;
+//   cout << priority << endl;
+//   cout << body << endl;
+//   cout << status << endl;
 
 //   return 0;
+// }
 // }
 
 int main()
 {
+  int loginOrRegister;
+  while (loginOrRegister != 2)
+  {
+    string email, password;
+    cout << "______Welcome to Our Email Management System______\n"
+         << endl;
+    cout << "Would you like to:" << endl;
+    cout << "1. Register new user" << endl;
+    cout << "2. Login to the system" << endl;
+    loginOrRegister = promptIntInput(1, 2);
+
+    if (loginOrRegister == 1)
+    {
+      cout << "\nEnter your email: ";
+      getline(cin, email);
+      cout << "Enter your password: ";
+      getline(cin, password);
+      cout << endl;
+      if (User::registerNewUser(email, password))
+      {
+        cout << "Registration successful." << endl;
+        string continueToLogin;
+        cout << "Would you like to continue to login? (1 - yes, 2 - no) : ";
+        getline(cin, continueToLogin);
+        if (continueToLogin == "1")
+        {
+          loginOrRegister = 2;
+          break;
+        }
+      }
+      else
+      {
+        cout << "Registration failed, please try again." << endl;
+      }
+    }
+  }
+
+  cout << "Please login with your email and password: \n"
+       << endl;
+
+  bool loggedIn = false;
+  while (!loggedIn)
+  {
+    // LOGIN
+    string email, password;
+    bool userAuthenticated = false;
+
+    while (!userAuthenticated)
+    {
+      cout << "\nEnter your email: ";
+      getline(cin, email);
+      cout << "Enter your password: ";
+      getline(cin, password);
+      cout << endl;
+
+      userAuthenticated = User::authenticateUser(email, password);
+    }
+
+    User loggedInUser = User(email);
+
+    // MAIN MENU
+    loggedIn = mainMenu(loggedInUser);
+  }
+
+  return 0;
+}
+
+bool mainMenu(User user)
+{
+  cout << "\nEmail System Menu:\n";
+  cout << "1. Compose and Send Email\n";
+  cout << "2. View Inbox (list)\n";
+  cout << "3. View Inbox (one-by-one)\n";
+  cout << "4. View Sent Emails\n";
+  cout << "5. View Recycle Bin\n";
+  cout << "6. View Outbox\n";
+  cout << "7. Send First Email in Outbox\n";
+  cout << "8. Search Emails\n";
+  cout << "9. Log Out\n";
+  cout << "10. Exit\n"
+       << endl;
+  ;
+  // cout << "Enter your choice: ";
+  int choice = promptIntInput(1, 10);
   int loginOrRegister;
   while (loginOrRegister != 2)
   {
