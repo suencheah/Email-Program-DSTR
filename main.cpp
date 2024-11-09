@@ -137,12 +137,16 @@ bool mainMenu(User user)
     {
     case 1:
       user.importantEmails.showEmailsBy10("inbox");
+      mainMenu(user);
       break;
     case 2:
       user.normalEmails.showEmailsBy10("inbox");
+      mainMenu(user);
       break;
     case 3:
       user.spamEmails.showEmailsBy10("inbox");
+      mainMenu(user);
+      break;
     }
     break;
   // View Inbox (one-by-one)
@@ -155,12 +159,15 @@ bool mainMenu(User user)
     {
     case 1:
       showIndividualEmails(user.importantEmails, user, "important mails");
+      mainMenu(user);
       break;
     case 2:
       showIndividualEmails(user.normalEmails, user, "normal mails");
+      mainMenu(user);
       break;
     case 3:
       showIndividualEmails(user.spamEmails, user, "spam mails");
+      mainMenu(user);
       break;
     }
   // View Sent Emails
@@ -171,10 +178,12 @@ bool mainMenu(User user)
   // View Recycle Bin
   case 5:
     user.deletedEmails.showEmailsBy10("deleted emails");
+    mainMenu(user);
     break;
   // View Outbox
   case 6:
     user.outbox.displayOutbox();
+    mainMenu(user);
     break;
   // Send First Email in Outbox
   case 7:
@@ -187,10 +196,12 @@ bool mainMenu(User user)
       Email toSend = user.outbox.dequeue();
       user.sendFirstEmail(toSend);
     }
+    mainMenu(user);
     break;
   // Search Emails
   case 8:
     userSearchEmails(user);
+    mainMenu(user);
     break;
   // Log Out
   case 9:
@@ -307,6 +318,7 @@ bool manageEmail(Email &email, User &user)
     int choice;
     cout << "\n------------------" << endl;
     cout << "From:      " << email.sender << endl;
+    cout << "To:        " << email.recipient << endl;
     cout << "Date:      " << email.date << endl;
     cout << "Subject:   " << email.subject << endl;
     cout << "Body: " << endl
