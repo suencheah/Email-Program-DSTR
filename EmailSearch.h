@@ -9,23 +9,25 @@ class EmailSearch
 {
 public:
   // Main search function to find emails based on keyword and type
-  static void searchEmails(User &user, const string &keyword, const string &searchType = "all")
+  static EmailStack searchEmails(User &user, const string &keyword, const string &searchType = "all")
   {
     EmailStack matchedEmails;
     searchInStack(user.importantEmails, keyword, searchType, matchedEmails);
     searchInStack(user.normalEmails, keyword, searchType, matchedEmails);
     searchInStack(user.spamEmails, keyword, searchType, matchedEmails);
     searchInStack(user.sentEmails, keyword, searchType, matchedEmails);
+    searchInStack(user.deletedEmails, keyword, searchType, matchedEmails);
 
-    if (matchedEmails.isEmpty())
-    {
-      cout << "No emails found with the specified search criteria.\n";
-    }
-    else
-    {
-      cout << "Displaying matched emails for keyword \"" << keyword << "\" in " << searchType << ":\n";
-      matchedEmails.showEmailsBy10("matched emails");
-    }
+    return matchedEmails;
+    // if (matchedEmails.isEmpty())
+    // {
+    //   cout << "No emails found with the specified search criteria.\n";
+    // }
+    // else
+    // {
+    //   cout << "Displaying matched emails for keyword \"" << keyword << "\" in " << searchType << ":\n";
+    //   matchedEmails.showEmailsBy10("matched emails");
+    // }
   }
 
 private:

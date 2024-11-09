@@ -11,6 +11,7 @@ using namespace std;
 int promptIntInput(int start, int end);
 bool mainMenu(User user);
 void composeEmail(User user);
+void userSearchEmails(User user);
 void replyToEmail(User user, string targetRecipient);
 void sendEmailToOutbox(User user, Email newEmail);
 void showIndividualEmails(EmailStack &stack, User &user, string inboxName);
@@ -27,12 +28,107 @@ void showIndividualEmails(EmailStack &stack, User &user, string inboxName);
 //   cout << priority << endl;
 //   cout << body << endl;
 //   cout << status << endl;
+//   string test = "meisuen@apu.com,angelina@apu.com,\"test \"\"hi\"\" and , are u ok?\",05-11-2024 19:36,IMPORTANT,\"TESTTTTTT \"\"WOW\"\", \"\"COOL\"\", amazing\",Pending";
+//   string sender, recipient, subject, date, body, priority, status;
+//   Helper::parseCSVLine(test, sender, recipient, subject, date, priority, body, status);
+//   cout << sender << endl;
+//   cout << recipient << endl;
+//   cout << subject << endl;
+//   cout << date << endl;
+//   cout << priority << endl;
+//   cout << body << endl;
+//   cout << status << endl;
 
 //   return 0;
+// }
 // }
 
 int main()
 {
+  int loginOrRegister;
+  while (loginOrRegister != 2)
+  {
+    string email, password;
+    cout << "______Welcome to Our Email Management System______\n"
+         << endl;
+    cout << "Would you like to:" << endl;
+    cout << "1. Register new user" << endl;
+    cout << "2. Login to the system" << endl;
+    loginOrRegister = promptIntInput(1, 2);
+
+    if (loginOrRegister == 1)
+    {
+      cout << "\nEnter your email: ";
+      getline(cin, email);
+      cout << "Enter your password: ";
+      getline(cin, password);
+      cout << endl;
+      if (User::registerNewUser(email, password))
+      {
+        cout << "Registration successful." << endl;
+        string continueToLogin;
+        cout << "Would you like to continue to login? (1 - yes, 2 - no) : ";
+        getline(cin, continueToLogin);
+        if (continueToLogin == "1")
+        {
+          loginOrRegister = 2;
+          break;
+        }
+      }
+      else
+      {
+        cout << "Registration failed, please try again." << endl;
+      }
+    }
+  }
+
+  cout << "Please login with your email and password: \n"
+       << endl;
+
+  bool loggedIn = false;
+  while (!loggedIn)
+  {
+    // LOGIN
+    string email, password;
+    bool userAuthenticated = false;
+
+    while (!userAuthenticated)
+    {
+      cout << "\nEnter your email: ";
+      getline(cin, email);
+      cout << "Enter your password: ";
+      getline(cin, password);
+      cout << endl;
+
+      userAuthenticated = User::authenticateUser(email, password);
+    }
+
+    User loggedInUser = User(email);
+
+    // MAIN MENU
+    loggedIn = mainMenu(loggedInUser);
+  }
+
+  return 0;
+}
+
+bool mainMenu(User user)
+{
+  cout << "\nEmail System Menu:\n";
+  cout << "1. Compose and Send Email\n";
+  cout << "2. View Inbox (list)\n";
+  cout << "3. View Inbox (one-by-one)\n";
+  cout << "4. View Sent Emails\n";
+  cout << "5. View Recycle Bin\n";
+  cout << "6. View Outbox\n";
+  cout << "7. Send First Email in Outbox\n";
+  cout << "8. Search Emails\n";
+  cout << "9. Log Out\n";
+  cout << "10. Exit\n"
+       << endl;
+  ;
+  // cout << "Enter your choice: ";
+  int choice = promptIntInput(1, 10);
   int loginOrRegister;
   while (loginOrRegister != 2)
   {
@@ -123,6 +219,8 @@ bool mainMenu(User user)
   // Compose and Send Email
   case 1:
     composeEmail(user);
+    cout << "done2" << endl;
+    mainMenu(user);
     break;
   //  View Inbox (list)
   case 2:
@@ -163,6 +261,7 @@ bool mainMenu(User user)
   // View Sent Emails
   case 4:
     user.sentEmails.showEmailsBy10("sent emails");
+    mainMenu(user);
     break;
   // View Recycle Bin
   case 5:
@@ -186,7 +285,7 @@ bool mainMenu(User user)
     break;
   // Search Emails
   case 8:
-    // searchEmails(user); // todo
+    userSearchEmails(user);
     break;
   // Log Out
   case 9:
@@ -219,6 +318,52 @@ void composeEmail(User user)
   string date = Helper::getCurrentTimestamp();
   Email newEmail = Email(user.email, to, subject, body, date);
   sendEmailToOutbox(user, newEmail);
+  // cout << "Done" << endl;
+  // mainMenu(user);
+}
+
+void userSearchEmails(User user)
+{
+  int searchCriteria;
+  cout << "Please chose criteria for searching: \n";
+  cout << "1. Sender email\n";
+  cout << "2. Recipient email\n";
+  cout << "3. Email Subject\n";
+  cout << "4. Content\n";
+  cout << "5. All\n";
+  cout << "6. Back to main menu\n";
+  searchCriteria = promptIntInput(1, 6);
+
+  string keyword;
+  cout << "Please enter keyword for searching: ";
+  getline(cin, keyword);
+
+  EmailStack searchResults;
+
+  switch (searchCriteria)
+  {
+  case 1:
+    searchResults = EmailSearch::searchEmails(user, keyword, "sender");
+    break;
+  case 2:
+    searchResults = EmailSearch::searchEmails(user, keyword, "receiver");
+    break;
+  case 3:
+    searchResults = EmailSearch::searchEmails(user, keyword, "subject");
+    break;
+  case 4:
+    searchResults = EmailSearch::searchEmails(user, keyword, "body");
+    break;
+  case 5:
+    searchResults = EmailSearch::searchEmails(user, keyword, "all");
+    break;
+  case 6:
+    mainMenu(user);
+    break;
+    ;
+  }
+  showIndividualEmails(searchResults, user, "search results");
+  mainMenu(user);
 }
 
 void replyToEmail(User user, string targetRecipient)
@@ -236,7 +381,7 @@ void replyToEmail(User user, string targetRecipient)
   string date = Helper::getCurrentTimestamp();
   Email newEmail = Email(user.email, targetRecipient, subject, body, date);
   sendEmailToOutbox(user, newEmail);
-  return;
+  // return;
 }
 
 void sendEmailToOutbox(User user, const Email newEmail)
@@ -245,6 +390,9 @@ void sendEmailToOutbox(User user, const Email newEmail)
   cout << "\nEmail added to outbox queue with status: " << newEmail.status;
   user.appendOutgoingEmailToCSV(newEmail);
   cout << "\nPlease manually send from outbox.\n\n";
+
+  // cout << "done1.5" << endl;
+  mainMenu(user);
 }
 
 bool manageEmail(Email &email, User &user)
@@ -343,10 +491,14 @@ void showIndividualEmails(EmailStack &stack, User &user, string inboxName)
     return;
   }
   Node *currEmail = stack.top;
-  while (viewNext)
+  while (viewNext && currEmail != nullptr)
   {
     viewNext = manageEmail(currEmail->data, user);
     currEmail = currEmail->next;
+  }
+  if (viewNext && currEmail == nullptr)
+  {
+    cout << "You have reached the end of " << inboxName << "." << endl;
   }
 }
 
@@ -371,6 +523,7 @@ int promptIntInput(int start, int end)
       else
       {
         validInput = true;
+        cout << endl;
         return choice;
       }
     }

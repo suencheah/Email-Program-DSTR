@@ -110,7 +110,7 @@ public:
             rear->next = newEmailNode;
             rear = newEmailNode;
         }
-        cout << "enqueued" << endl;
+        // cout << "enqueued" << endl;
     }
 
     Email dequeue()

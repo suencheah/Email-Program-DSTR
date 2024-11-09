@@ -63,20 +63,20 @@ public:
       cout << "You have no " << inboxName << "." << endl;
       return;
     }
-    Node *curr = top;
     bool shown = false;
     int shownCount = 0;
     bool continueShowing = true;
-    while (curr != nullptr && continueShowing)
+    Node *current = top;
+    while (current != nullptr && continueShowing)
     {
-      cout << "From: " << curr->data.sender << endl;
-      cout << "Date: " << curr->data.date << endl;
-      cout << "Subject: " << curr->data.subject << endl;
-      cout << "Body: " << curr->data.body << endl;
+      cout << "From: " << current->data.sender << endl;
+      cout << "Date: " << current->data.date << endl;
+      cout << "Subject: " << current->data.subject << endl;
+      cout << "Body: " << current->data.body << endl;
       cout << "------------------" << endl;
 
       shownCount++;
-      curr = curr->next;
+      current = current->next;
 
       if (shownCount == 10)
       {
@@ -98,7 +98,7 @@ public:
         shownCount = 0; // Reset count for the next set of 10 emails
       }
     }
-    if (curr == nullptr){
+    if (current == nullptr){
       cout << "End of "<< inboxName <<  " reached.\n";
     }
   }

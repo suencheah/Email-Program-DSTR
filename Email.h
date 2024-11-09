@@ -44,12 +44,12 @@ struct Email
     // Important criteria
     if (tempSender.find("@apu.com") != string::npos)
     {
-      score += 3;
+      score += 2;
       // cout << "found sender important" << endl;
     }
     if (tempSender.find("@work.com") != string::npos)
     {
-      score += 3;
+      score += 2;
       // cout << "found sender important" << endl;
     }
     if (tempSubject.find("urgent") != string::npos)
@@ -59,7 +59,7 @@ struct Email
     }
     if (tempBody.find("meeting") != string::npos)
     {
-      score += 1;
+      score += 2;
       // cout << "found body meeting" << endl;
     }
 
@@ -113,6 +113,20 @@ struct Email
   string FormatEmailToCsvLine() const
   {
     return sender + "," + recipient + "," + Helper::output_csv(subject) + "," + date + "," + Helper::EmailPriorityToString(priority) + "," + Helper::output_csv(body) + "," + status + "\n";
+  }
+
+  void uploadEmailToServer(){
+    ofstream file("DataFiles/pendingEmails.csv", ios::app);
+    if (file.is_open())
+    {
+      string tempString = FormatEmailToCsvLine();
+      file << tempString;
+      file.close();
+    }
+    else
+    {
+      cout << "Error: Unable to save to CSV file!" << endl;
+    }
   }
 
   

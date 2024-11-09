@@ -169,7 +169,7 @@ public:
     }
   }
 
-  void updateEmailStatusInCSV(Email currEmail, const string &newStatus)
+  void updateEmailStatusInCSV(Email &currEmail, const string &newStatus)
   {
     ifstream inFile(dataFilePath);
     ofstream tempFile("temp.csv");
@@ -257,25 +257,10 @@ public:
     cout << "To: " << toSend.recipient << "\n";
     cout << "Subject: " << toSend.subject << "\n";
     cout << "Body: " << toSend.body << "\n";
-    // cout << "Priority: ";
-    // switch (toSend.priority)
-    // {
-    // case SPAM:
-    //     cout << "SPAM";
-    //     break;
-    // case NORMAL:
-    //     cout << "NORMAL";
-    //     break;
-    // case IMPORTANT:
-    //     cout << "IMPORTANT";
-    //     break;
-    // default:
-    //     cout << "UNASSIGNED";
-    //     break;
-    // }
     cout << "\n\n";
 
     updateEmailStatusInCSV(toSend, "Sent");
+    toSend.uploadEmailToServer();
 
     sentEmails.push(toSend);
 
